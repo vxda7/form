@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% block body %}
+  <h1>{{movie.title}}</h1>
+
+  {% comment %}
+    <a href="{% url 'movies:delete' movie.id %}">삭제</a>
+  {% endcomment %}
+  
+  <form action="{% url 'movies:delete' movie.id %}" method="POST">
+    {% csrf_token %}
+    <input type="submit" value="삭제(post)">
+  </form>
+  <a href="{% url 'movies:update' movie.id %}">수정</a>
+  <a href="{% url 'movies:update_model_form' movie.id %}">수정(모델폼)</a>
+
+  <form action="{% url 'movies:comment_create' movie.id %}" method="POST">
+    {% csrf_token %}
+    {% bootstrap_form comment_form %}
+    {% buttons submit="제출"%}{% endbuttons %}
+  </form>
+  {% if movie.comment_set.all %}
+    {% for comment in movie.comment_set.all %}
+      <h6>{{comment.author}}</h6>
+      <h2>{{comment.content}}</h3>
+    {% endfor %}
+  {% else %}
+    <h5>댓글이 없습니다.</h5>
+  {% endif %}
+
+
+{% endblock %}
